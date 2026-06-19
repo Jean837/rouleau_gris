@@ -1,50 +1,57 @@
 @extends('admin.layout')
 @section('content')
 
-<h1 style="font-family:'Playfair Display',serif" class="text-2xl text-stone-200 mb-8">Catégories</h1>
+<div class="mb-10">
+    <p class="text-[10px] tracking-[0.3em] uppercase text-silver/30 mb-1">Organisation</p>
+    <h1 class="garamond italic text-4xl text-parchment/80">Catégories</h1>
+</div>
 
 <div class="grid grid-cols-2 gap-8 max-w-3xl">
-    <div class="border border-stone-800 p-6">
-        <div class="text-xs text-stone-600 tracking-widest uppercase mb-5">Nouvelle catégorie</div>
-        <form method="POST" action="{{ route('admin.categories.store') }}" class="space-y-4">
+
+    {{-- Créer --}}
+    <div class="border p-6" style="border-color:#1c1c18; background:#0a0a08;">
+        <p class="text-[9px] tracking-[0.3em] uppercase text-silver/25 mb-6">Nouvelle catégorie</p>
+        <form method="POST" action="{{ route('admin.categories.store') }}" class="space-y-5">
             @csrf
+            @error('name')
+            <p class="text-[10px] text-red-400/60">{{ $message }}</p>
+            @enderror
             <div>
-                <label class="block text-xs text-stone-700 mb-1">Nom</label>
+                <label class="text-[9px] text-silver/30 block mb-1">Nom</label>
                 <input type="text" name="name" value="{{ old('name') }}" required
-                       class="w-full bg-transparent border border-stone-800 text-stone-300 px-3 py-2 text-sm
-                              focus:outline-none focus:border-stone-600 transition">
+                       class="input-admin" placeholder="Poésie, Journal...">
             </div>
             <div>
-                <label class="block text-xs text-stone-700 mb-1">Couleur</label>
-                <input type="color" name="color" value="{{ old('color', '#6B7280') }}"
-                       class="h-8 w-16 bg-transparent border border-stone-800">
+                <label class="text-[9px] text-silver/30 block mb-1">Couleur</label>
+                <div class="flex items-center gap-3">
+                    <input type="color" name="color" value="{{ old('color', '#6B7280') }}"
+                           class="h-8 w-12 border border-white/8 bg-transparent cursor-pointer">
+                    <span class="text-[10px] text-silver/25">Couleur d'accent</span>
+                </div>
             </div>
-            <button type="submit"
-                    class="text-xs border border-stone-700 text-stone-400 px-4 py-2
-                           hover:border-stone-500 hover:text-stone-200 transition">
-                Créer
-            </button>
+            <button type="submit" class="btn-admin">Créer</button>
         </form>
     </div>
 
-    <div class="border border-stone-800 p-6">
-        <div class="text-xs text-stone-600 tracking-widest uppercase mb-5">Existantes</div>
+    {{-- Liste --}}
+    <div class="border p-6" style="border-color:#1c1c18; background:#0a0a08;">
+        <p class="text-[9px] tracking-[0.3em] uppercase text-silver/25 mb-6">Existantes</p>
         <div class="space-y-3">
             @forelse($categories as $cat)
-            <div class="flex items-center justify-between">
-                <div class="flex items-center gap-2">
-                    <div class="w-2 h-2 rounded-full" style="background:{{ $cat->color }}"></div>
-                    <span class="text-stone-400 text-sm">{{ $cat->name }}</span>
-                    <span class="text-stone-700 text-xs">({{ $cat->posts_count }})</span>
+            <div class="flex items-center justify-between py-2 border-b" style="border-color:#131410;">
+                <div class="flex items-center gap-3">
+                    <div class="w-2 h-2 rounded-full" style="background:{{ $cat->color }}; opacity:0.7;"></div>
+                    <span class="garamond italic text-parchment/60 text-sm">{{ $cat->name }}</span>
+                    <span class="text-[9px] text-silver/25">({{ $cat->posts_count }})</span>
                 </div>
                 <form method="POST" action="{{ route('admin.categories.destroy', $cat) }}"
                       onsubmit="return confirm('Supprimer ?')">
                     @csrf @method('DELETE')
-                    <button class="text-xs text-stone-700 hover:text-red-500 transition">×</button>
+                    <button class="text-[10px] text-silver/20 hover:text-red-400/50 transition">×</button>
                 </form>
             </div>
             @empty
-            <p class="text-stone-700 text-sm italic">Aucune catégorie.</p>
+            <p class="garamond italic text-silver/20 text-sm">Aucune catégorie.</p>
             @endforelse
         </div>
     </div>
